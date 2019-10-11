@@ -1,0 +1,9 @@
+Market Research Express
+
+Introduction/Business Problem
+Market Research is an area that requires an important effort to gather information for each client. On many occasions these clients want a "first vision" of their market. These requests are usually accompanied by a sense of urgency. In this sense, I have designed this application to be able to know the environment of any market in a few minutes, particularly elements of the geographical distribution of the premises, the average distance of the chosen point (indicating the degree of density), as well as a brief analysis of the predominant names (as a basis for future Branding).
+
+To run this application, you only need to have Foursquare credentials, and the location you want to evaluate.
+
+Data
+It works with the data provided in Foursquare, specifically: name of the place, location (latitude and longitude), category, and distance of the selected point.
