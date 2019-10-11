@@ -5,7 +5,7 @@
 # 
 # Express Market Research, with this code you can make a quick investigation of any location, including aspects such as number of premises, distances, and even a previous analysis of names.
 
-# In[60]:
+# In[1]:
 
 
 import numpy as np
@@ -58,7 +58,7 @@ print('Libraries imported.')
 
 # ### Define de address
 
-# In[2]:
+# In[60]:
 
 
 address = '101 9 Ave SW, Calgary, AB T2P 1J9, Canada'
@@ -73,7 +73,7 @@ print('The geograpical coordinate of {} are {}, {}, and the Radius is {} meters.
 
 # ### Get Foursquare information
 
-# In[3]:
+# In[61]:
 
 
 CLIENT_ID = 'WNU4QNPM0NESFXS5PNS4FVNI2LXWXV3F5AVCX2UTZDEZYS5H' # your Foursquare ID
@@ -88,7 +88,7 @@ print('CLIENT_SECRET:' + CLIENT_SECRET)
 
 # ### Transform data
 
-# In[4]:
+# In[62]:
 
 
 def getNearbyVenues(names, latitudes, longitudes, radius=radius):
@@ -132,7 +132,7 @@ def getNearbyVenues(names, latitudes, longitudes, radius=radius):
     return(nearby_venues)
 
 
-# In[5]:
+# In[63]:
 
 
 url = 'https://api.foursquare.com/v2/venues/explore?&client_id={}&client_secret={}&v={}&ll={},{}&radius={}&limit={}'.format(
@@ -147,7 +147,7 @@ url = 'https://api.foursquare.com/v2/venues/explore?&client_id={}&client_secret=
 url
 
 
-# In[6]:
+# In[64]:
 
 
 results = requests.get(url).json()["response"]['groups'][0]['items'] #get the relevant data
@@ -171,18 +171,18 @@ print ('There are {} venues, and {} categories.'.format(nearby_venues['Venue'].c
                                                         nearby_venues['Venue Category'].nunique()))
 
 
-# In[ ]:
+# In[65]:
 
 
-
+nearby_venues.head()
 
 
 # ## Part 2: Map
 
-# In[7]:
+# In[66]:
 
 
-venues_map = folium.Map(location=[lat, lng], zoom_start=13)
+z_map = folium.Map(location=[lat, lng], zoom_start=13)
 
 folium.features.CircleMarker(
     [lat, lng],
@@ -192,9 +192,9 @@ folium.features.CircleMarker(
     fill = True,
     fill_color = 'red',
     fill_opacity = 0.6
-).add_to(venues_map)
+).add_to(z_map)
 
-for lat, lng, label in zip(nearby_venues['Venue Latitude'], nearby_venues['Venue Longitude'], nearby_venues['Venue']):
+for lat, lng, label in zip(categories_map['Venue Latitude'], categories_map['Venue Longitude'], categories_map['Class']):
     folium.features.CircleMarker(
         [lat, lng],
         radius=5,
@@ -203,9 +203,11 @@ for lat, lng, label in zip(nearby_venues['Venue Latitude'], nearby_venues['Venue
         fill = True,
         fill_color='blue',
         fill_opacity=0.6
-    ).add_to(venues_map)
+    ).add_to(z_map)
 
-venues_map
+    
+
+z_map
 
 
 # In[ ]:
@@ -218,7 +220,7 @@ venues_map
 
 # ### Distance Analysis
 
-# In[8]:
+# In[67]:
 
 
 attribute = requests.get(url).json()["response"]['groups'][0]['items']
@@ -245,13 +247,13 @@ nearby_attribute.columns = [
 nearby_attribute.head()
 
 
-# In[9]:
+# In[68]:
 
 
 print ('The average distancie from {} is {}.'.format(address, nearby_attribute['Distance'].mean()))
 
 
-# In[10]:
+# In[69]:
 
 
 nearby_attribute['Distance'].plot(kind='hist', figsize=(12, 6), color=(0.2, 0.4, 0.6, 0.6))
@@ -266,7 +268,7 @@ print ('The average distancie in {} is {}.'.format(address, nearby_attribute['Di
 
 # ### Naming Analysis
 
-# In[11]:
+# In[12]:
 
 
 names = requests.get(url).json()["response"]['groups'][0]['items']
@@ -280,7 +282,7 @@ names_list.append([(
 name_attribute = pd.DataFrame([item for venue_list in names_list for item in venue_list])
 
 
-# In[12]:
+# In[73]:
 
 
 text = name_attribute.loc[:,0]
@@ -301,7 +303,13 @@ plt.tight_layout(pad=0)
 plt.show()
 
 
-# In[13]:
+# In[ ]:
+
+
+
+
+
+# In[14]:
 
 
 nearby_venues.head()
@@ -309,7 +317,7 @@ nearby_venues.head()
 
 # ### Clustering
 
-# In[14]:
+# In[15]:
 
 
 venues_group = nearby_venues[['Venue Category', 'Venue']].groupby(by='Venue Category').count().reset_index()
@@ -318,7 +326,7 @@ venues_group.shape
 
 # #### Reduce the number of categories
 
-# In[15]:
+# In[16]:
 
 
 venues_group['Venue Category'].unique()
@@ -336,7 +344,7 @@ class_fitness = ['Yoga Studio', 'Gym', 'Gym / Fitness Center']
 class_store = ['Department Store', 'Grocery Store', 'Market', 'Park', 'Plaza', 'Shoe Store', 'Shopping Mall', 'Wine Shop']
 
 
-# In[16]:
+# In[17]:
 
 
 def __condition__ (x):
@@ -357,20 +365,20 @@ def __condition__ (x):
             return x
 
 
-# In[17]:
+# In[18]:
 
 
 venues_group['Class'] = venues_group.apply(lambda x: __condition__(x["Venue Category"]), axis=1)
 
 
-# In[18]:
+# In[19]:
 
 
 venues_group = venues_group[['Class', 'Venue']]
 venues_group = venues_group.groupby(by='Class').sum()
 
 
-# In[19]:
+# In[20]:
 
 
 venues_group.shape
@@ -378,7 +386,7 @@ venues_group.shape
 
 # #### Plotting the venues by categories
 
-# In[20]:
+# In[21]:
 
 
 w = venues_group.sort_values(by='Venue', ascending=False)
@@ -396,27 +404,27 @@ plt.show()
 
 # #### Map by Category
 
-# In[46]:
+# In[22]:
 
 
 categories_map = nearby_venues
 categories_map.shape
 
 
-# In[47]:
+# In[23]:
 
 
 categories_map['Class'] = categories_map.apply(lambda x: __condition__(x["Venue Category"]), axis=1)
 categories_map.head()
 
 
-# In[51]:
+# In[24]:
 
 
 categories_map['Class'].unique()
 
 
-# In[52]:
+# In[25]:
 
 
 c1 = categories_map.loc[categories_map['Class']=='Restaurant']
@@ -428,7 +436,7 @@ c6 = categories_map.loc[categories_map['Class']=='Fitness']
 c7 = categories_map.loc[categories_map['Class']=='Store']
 
 
-# In[63]:
+# In[26]:
 
 
 c_map = folium.Map(location=[lat, lng], zoom_start=13)
@@ -489,22 +497,4 @@ c_map.add_child(Text)
     
     
 c_map
-
-
-# In[41]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
