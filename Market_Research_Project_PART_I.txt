@@ -1,9 +1,9 @@
 Market Research Express
 
 Introduction/Business Problem
-Market Research is an area that requires an important effort to gather information for each client. On many occasions these clients want a "first vision" of their market. These requests are usually accompanied by a sense of urgency. In this sense, I have designed this application to be able to know the environment of any market in a few minutes, particularly elements of the geographical distribution of the premises, the average distance of the chosen point (indicating the degree of density), as well as a brief analysis of the predominant names (as a basis for future Branding).
-
-To run this application, you only need to have Foursquare credentials, and the location you want to evaluate.
+Market research is an activity that requires important resources, particularly time and money. This situation creates a problem for those organizations that do not have the necessary resources to know the market better, and thus be able to offer a better product or service. In this sense, from this application a tool is offered so that anyone can know relevant aspects of the market in any location, according to their interest. Thus, with this tool just by placing an address in a few minutes you can have relevant information about the number of premises, type of premises, the density of these establishments in the defined space, among other things.
 
 Data
-It works with the data provided in Foursquare, specifically: name of the place, location (latitude and longitude), category, and distance of the selected point.
+The data used to work comes from Foursquare. Specifically, we work with the name of the establishments, their location (georeferenced in latitude and longitude), the type of establishment (according to the categories offered by Foursquare, in addition to its own classification), the distance of the establishments from the selected central point , and the valuation of the establishments. The data can be text (names and categories), or numeric (coordinates and distance). In addition there are own calculations in the application.
+
+For example, with the present application, you can obtain a dataframe with 100 establishments, and a certain number of categories, differentiating between restaurants, bars, cinemas, etc.
